@@ -45,6 +45,7 @@ from novaclient.v1_1 import virtual_interfaces
 from novaclient.v1_1 import volume_snapshots
 from novaclient.v1_1 import volume_types
 from novaclient.v1_1 import volumes
+from novaclient.v1_1 import periodic_checks
 
 
 class Client(object):
@@ -134,6 +135,9 @@ class Client(object):
         self.availability_zones = \
             availability_zones.AvailabilityZoneManager(self)
         self.server_groups = server_groups.ServerGroupsManager(self)
+        
+        self.periodic_checks = periodic_checks.PeriodicChecksManager()
+        
 
         # Add in any extensions...
         if extensions:
