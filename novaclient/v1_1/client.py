@@ -33,6 +33,7 @@ from novaclient.v1_1 import images
 from novaclient.v1_1 import keypairs
 from novaclient.v1_1 import limits
 from novaclient.v1_1 import networks
+from novaclient.v1_1 import periodic_checks
 from novaclient.v1_1 import quota_classes
 from novaclient.v1_1 import quotas
 from novaclient.v1_1 import security_group_rules
@@ -45,7 +46,6 @@ from novaclient.v1_1 import virtual_interfaces
 from novaclient.v1_1 import volume_snapshots
 from novaclient.v1_1 import volume_types
 from novaclient.v1_1 import volumes
-from novaclient.v1_1 import periodic_checks
 
 
 class Client(object):
@@ -117,6 +117,7 @@ class Client(object):
         self.volume_types = volume_types.VolumeTypeManager(self)
         self.keypairs = keypairs.KeypairManager(self)
         self.networks = networks.NetworkManager(self)
+        self.periodic_checks = periodic_checks.PeriodicChecksManager()
         self.quota_classes = quota_classes.QuotaClassSetManager(self)
         self.quotas = quotas.QuotaSetManager(self)
         self.security_groups = security_groups.SecurityGroupManager(self)
@@ -135,9 +136,6 @@ class Client(object):
         self.availability_zones = \
             availability_zones.AvailabilityZoneManager(self)
         self.server_groups = server_groups.ServerGroupsManager(self)
-        
-        self.periodic_checks = periodic_checks.PeriodicChecksManager()
-        
 
         # Add in any extensions...
         if extensions:

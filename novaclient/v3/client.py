@@ -25,6 +25,7 @@ from novaclient.v3 import hypervisors
 from novaclient.v3 import images
 from novaclient.v3 import keypairs
 from novaclient.v3 import list_extensions
+from novaclient.v3 import periodic_checks
 from novaclient.v3 import quotas
 from novaclient.v3 import servers
 from novaclient.v3 import services
@@ -92,6 +93,7 @@ class Client(object):
         self.hypervisors = hypervisors.HypervisorManager(self)
         self.images = images.ImageManager(self)
         self.keypairs = keypairs.KeypairManager(self)
+        self.periodic_checks = periodic_checks.PeriodicChecksManager()
         self.quotas = quotas.QuotaSetManager(self)
         self.servers = servers.ServerManager(self)
         self.services = services.ServiceManager(self)
