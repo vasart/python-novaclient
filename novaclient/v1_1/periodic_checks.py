@@ -11,6 +11,7 @@
 #    under the License.
 
 from novaclient import base
+from novaclient import exceptions
 
 
 class LogRecord(object):
