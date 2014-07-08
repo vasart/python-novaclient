@@ -10,38 +10,45 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+"""
+Check results interface.
+"""
+
 from novaclient import base
-from novaclient.v1_1 import periodic_checks
+from novaclient.v1_1 import check_results
 
 
-class PeriodicCheck(base.Resource):
+class CheckResult(base.Resource):
     """
-    A check is a periodic task to update trusted pool.
+    A check result is a ternary value (trusted, not_trusted, unknown)
+    and a status message.
     """
     HUMAN_ID = True
 
     def __repr__(self):
-        return "<Check: %s>" % self.name
+        return "<Check result: %s>" % self.name
 
     def delete(self):
         """
-        Delete this check.
+        Delete this check result.
         """
         self.manager.delete(self)
 
 
-class PeriodicCheckManager(periodic_checks.PeriodicCheckManager):
+class CheckResultManager(check_results.CheckResultManager):
     """
-    Manage :class:`PeriodicCheck` resources.
+    Manage :class:`CheckResult` resources.
     """
-    resource_class = PeriodicCheck
+    resource_class = CheckResult
 
-    def _build_body(self, name, desc, timeout, id):
+    def _build_body(self, timestamp, name, node, result, status, id):
         return {
-            "periodic_check": {
+            "check_result": {
+                "timestamp": timestamp,
                 "name": name,
-                "desc": desc,
-                "timeout": timeout,
+                "node": node,
+                "result": result,
+                "status": status,
                 "id": id
             }
         }
