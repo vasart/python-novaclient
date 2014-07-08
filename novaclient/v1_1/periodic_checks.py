@@ -9,20 +9,8 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-'''
-Created on Jul 4, 2014
 
-@author: anaumchev
-'''
-
-
-class CheckResult(object):
-    def __init__(self, result_id, time, name, node, result):
-        self.id = result_id
-        self.time = time
-        self.name = name
-        self.node = node
-        self.result = result
+from novaclient import base
 
 
 class LogRecord(object):
@@ -40,15 +28,35 @@ class Option(object):
         self.value = value
 
 
-class PeriodicCheck(object):
+class PeriodicCheck(base.Resource):
+    """
+    A check is a periodic task to update trusted pool.
+    """
+    HUMAN_ID = True
+
     def __init__(self, check_id, name, desc, timeout):
         self.id = check_id
         self.name = name
         self.desc = desc
         self.timeout = timeout
 
+    def __repr__(self):
+        return "<Check: %s>" % self.name
 
-class PeriodicChecksManager():
+    def delete(self):
+        """
+        Delete this check.
+        """
+        self.manager.delete(self)
+
+
+class PeriodicCheckManager(base.ManagerWithFind):
+    """
+    Manage :class:`PeriodicCheck` resources.
+    """
+    resource_class = PeriodicCheck
+    is_alphanum_id_allowed = True
+
     def get_log_records(self):
         log_records = []
         log_records.append(LogRecord("1", "12345", "source1", "message1"))
@@ -74,15 +82,66 @@ class PeriodicChecksManager():
     def get_specific_check(self, check_id):
         return self.get_checks_list()[check_id]
 
-    def get_results_list(self):
-        results = []
-        """Get the list of check results."""
-        results.append(checkResult(1, '2014/06/12 12:23:12', 'OpenAttestation',
-            1, 'Pass'))
-        results.append(checkResult(2, '2014/06/12 12:24:12', 'OpenAttestation',
-            2, 'Pass'))
-        results.append(checkResult(3, '2014/06/12 12:25:12', 'OpenAttestation',
-            3, 'Pass'))
-        results.append(checkResult(4, '2014/06/12 12:26:12', 'OpenAttestation',
-            4, 'Fail'))
-        return results
+    def list(self):
+        """
+        Get a list of all periodic checks.
+
+        :rtype: list of :class:`PeriodicCheck`.
+        """
+        query_string = "?%s"
+
+        return self._list("/periodic_checks%s%s" % query_string,
+            "periodic_checks")
+
+    def get(self, periodic_check):
+        """
+        Get a specific periodic check.
+
+        :param periodic_check: The ID of the :class:`PeriodicCheck` to get.
+        :rtype: :class:`PeriodicCheck`
+        """
+        return self._get("/periodic_checks/%s" % base.getid(periodic_check),
+            "periodic_check")
+
+    def delete(self, periodic_check):
+        """
+        Delete a specific periodic check
+
+        :param periodic_check: The ID of the :class:`PeriodicCheck` to get.
+        """
+        self._delete("/periodic_checks/%s" % base.getid(periodic_check))
+
+    def _build_body(self, name, desc, timeout, id):
+        return {
+            "periodic_check": {
+                "name": name,
+                "desc": desc,
+                "timeout": timeout,
+                "id": id
+            }
+        }
+
+    def create(self, name, desc, timeout, checkid="auto"):
+        """
+        Create a periodic check.
+
+        :param name: Brief name of the periodic check
+        :param desc: Full description of a periodic check
+        :param timeout: Timeout for a periodic check to run
+        :param checkid: ID for the check (optional). You can use the reserved
+                         value ``"auto"`` to have Nova generate a UUID for the
+                         check in cases where you cannot simply pass ``None``.
+        :rtype: :class:`PeriodicCheck`
+        """
+
+        try:
+            timeout = int(timeout)
+        except (TypeError, ValueError):
+            raise exceptions.CommandError(_("Timeout must be an integer."))
+
+        if checkid == "auto":
+            checkid = None
+
+        body = self._build_body(name, desc, timeout, checkid)
+
+        return self._create("/periodic_checks", body, "periodic_check")

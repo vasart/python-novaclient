@@ -18,5 +18,5 @@ Created on Jul 4, 2014
 from novaclient.v1_1 import periodic_checks
 
 
-class PeriodicChecksManager(periodic_checks.PeriodicChecksManager):
+class PeriodicCheckManager(periodic_checks.PeriodicCheckManager):
     resource_class = periodic_checks.PeriodicCheck

@@ -18,6 +18,7 @@ from novaclient.v1_1 import agents
 from novaclient.v1_1 import aggregates
 from novaclient.v1_1 import availability_zones
 from novaclient.v1_1 import certs
+from novaclient.v1_1 import check_results
 from novaclient.v1_1 import cloudpipe
 from novaclient.v1_1 import fixed_ips
 from novaclient.v1_1 import flavor_access
@@ -109,6 +110,7 @@ class Client(object):
         self.dns_entries = floating_ip_dns.FloatingIPDNSEntryManager(self)
         self.cloudpipe = cloudpipe.CloudpipeManager(self)
         self.certs = certs.CertificateManager(self)
+        self.check_results = check_results.CheckResultManager(self)
         self.floating_ips = floating_ips.FloatingIPManager(self)
         self.floating_ip_pools = floating_ip_pools.FloatingIPPoolManager(self)
         self.fping = fping.FpingManager(self)
@@ -117,7 +119,7 @@ class Client(object):
         self.volume_types = volume_types.VolumeTypeManager(self)
         self.keypairs = keypairs.KeypairManager(self)
         self.networks = networks.NetworkManager(self)
-        self.periodic_checks = periodic_checks.PeriodicChecksManager()
+        self.periodic_checks = periodic_checks.PeriodicCheckManager(self)
         self.quota_classes = quota_classes.QuotaClassSetManager(self)
         self.quotas = quotas.QuotaSetManager(self)
         self.security_groups = security_groups.SecurityGroupManager(self)
