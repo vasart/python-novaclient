@@ -2987,3 +2987,23 @@ def do_availability_zone_list(cs, _args):
     _translate_availability_zone_keys(result)
     utils.print_list(result, ['Name', 'Status'],
                      sortby_index=None)
+
+
+def do_periodic_check_list(cs, args):
+    """Get a list of periodic checks"""
+    checks = cs.periodic_checks.get_checks_list()
+    columns = ['Id', 'Name', 'Desc', 'Timeout']
+    utils.print_list(checks, columns)
+
+
+@utils.arg('result', metavar='<result>',
+  choices=['trusted', 'not_trusted', 'unknown'],
+  default=None,
+  help='status of a node: trusted, not_trusted or unknown.')
+@utils.arg('check', metavar='<check>', default=None, help='name of a check')
+@utils.arg('node', metavar='<node>', default=None, help='node')
+def do_check_result_list(cs, args):
+    """Get a list of periodic check results"""
+    results = cs.check_results.get_results_list()
+    columns = ['Id', 'Time', 'Name', 'Node', 'Result', 'Status']
+    utils.print_list(results, columns)

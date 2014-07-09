@@ -18,6 +18,7 @@ from novaclient.v3 import agents
 from novaclient.v3 import aggregates
 from novaclient.v3 import availability_zones
 from novaclient.v3 import certs
+from novaclient.v3 import check_results
 from novaclient.v3 import flavor_access
 from novaclient.v3 import flavors
 from novaclient.v3 import hosts
@@ -25,6 +26,7 @@ from novaclient.v3 import hypervisors
 from novaclient.v3 import images
 from novaclient.v3 import keypairs
 from novaclient.v3 import list_extensions
+from novaclient.v3 import periodic_checks
 from novaclient.v3 import quotas
 from novaclient.v3 import servers
 from novaclient.v3 import services
@@ -103,6 +105,7 @@ class Client(object):
         self.availability_zones = \
             availability_zones.AvailabilityZoneManager(self)
         self.certs = certs.CertificateManager(self)
+        self.check_results = check_results.CheckResultManager(self)
         self.list_extensions = list_extensions.ListExtManager(self)
         self.hosts = hosts.HostManager(self)
         self.flavors = flavors.FlavorManager(self)
@@ -110,6 +113,7 @@ class Client(object):
         self.hypervisors = hypervisors.HypervisorManager(self)
         self.images = images.ImageManager(self)
         self.keypairs = keypairs.KeypairManager(self)
+        self.periodic_checks = periodic_checks.PeriodicCheckManager(self)
         self.quotas = quotas.QuotaSetManager(self)
         self.servers = servers.ServerManager(self)
         self.services = services.ServiceManager(self)
