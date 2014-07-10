@@ -57,7 +57,14 @@ class PeriodicCheckManager(base.ManagerWithFind):
     """
     resource_class = PeriodicCheck
     is_alphanum_id_allowed = True
+<<<<<<< HEAD
+    
+    options = [Option("Security Checks Enabled", True), Option("Clean Tcp When Down", True),
+               Option("OpenAttestation Location", "192.168.255.4")]
+    
+=======
 
+>>>>>>> development
     def get_log_records(self):
         log_records = []
         log_records.append(LogRecord("1", "12345", "source1", "message1"))
@@ -65,11 +72,19 @@ class PeriodicCheckManager(base.ManagerWithFind):
         return log_records
 
     def get_global_settings(self):
+<<<<<<< HEAD
+#         options = []
+#         options.append(Option("Security Checks Enabled", True))
+#         options.append(Option("Clean Tcp When Down", True))
+#         options.append(Option("OpenAttestation Location", "192.168.255.4"))
+        return self.options
+=======
         options = []
         options.append(Option("Security Checks Enabled", True))
         options.append(Option("Clean Tcp When Down", True))
         options.append(Option("OpenAttestation Location", "192.168.255.4"))
         return options
+>>>>>>> development
 
     def get_checks_list(self):
         checks = []
