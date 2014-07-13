@@ -35,11 +35,12 @@ class PeriodicCheck(base.Resource):
     """
     HUMAN_ID = True
 
-    def __init__(self, check_id, name, desc, timeout):
+    def __init__(self, check_id, name, desc, timeout, spacing):
         self.id = check_id
         self.name = name
         self.desc = desc
         self.timeout = timeout
+	self.spacing = spacing
 
     def __repr__(self):
         return "<Check: %s>" % self.name
@@ -74,10 +75,11 @@ class PeriodicCheckManager(base.ManagerWithFind):
     def get_checks_list(self):
         checks = []
         checks.append(PeriodicCheck(0, 'OpenAttestation',
-            'Static file integrity check using IMA/TPM', 600))
-        checks.append(PeriodicCheck(1, 'DynMem', 'Dynamic memory check', 300))
+            'Static file integrity check using IMA/TPM', 600, 1200))
+        checks.append(PeriodicCheck(1, 'DynMem', 'Dynamic memory check', 300,
+	    600))
         checks.append(PeriodicCheck(2, 'Yet Another Check',
-            'One more mock check', 720))
+            'One more mock check', 720, 1440))
         return checks
 
     def get_specific_check(self, check_id):
@@ -91,7 +93,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
         """
         query_string = "?%s"
 
-        return self._list("/periodic_checks%s%s" % query_string,
+        return self._list("/periodic_checks%s" % query_string,
             "periodic_checks")
 
     def get(self, periodic_check):
@@ -112,17 +114,18 @@ class PeriodicCheckManager(base.ManagerWithFind):
         """
         self._delete("/periodic_checks/%s" % base.getid(periodic_check))
 
-    def _build_body(self, name, desc, timeout, id):
+    def _build_body(self, name, desc, timeout, spacing, id):
         return {
             "periodic_check": {
                 "name": name,
                 "desc": desc,
                 "timeout": timeout,
+		"spacing": spacing,
                 "id": id
             }
         }
 
-    def create(self, name, desc, timeout, checkid="auto"):
+    def create(self, name, desc, timeout, spacing, checkid="auto"):
         """
         Create a periodic check.
 

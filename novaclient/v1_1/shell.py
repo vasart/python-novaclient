@@ -3616,9 +3616,25 @@ def do_server_group_get(cs, args):
 
 def do_periodic_check_list(cs, args):
     """Get a list of periodic checks"""
-    checks = cs.periodic_checks.get_checks_list()
-    columns = ['Id', 'Name', 'Desc', 'Timeout']
+    checks = cs.periodic_checks.list()
+    columns = ['Id', 'Name', 'Desc', 'Timeout', 'Spacing']
     utils.print_list(checks, columns)
+
+
+@utils.arg('id', metavar='<id>', default=None, help='id of a check')
+@utils.arg('name', metavar='<name>', default=None, help='name of a check')
+@utils.arg('desc', metavar='<desc>', default=None, help='description')
+@utils.arg('timeout', metavar='<timeout>', default=None, help='timeout')
+@utils.arg('spacing', metavar='<spacing>', default=None, help='spacing')
+def do_periodic_check_add(cs, args):
+    """Add a periodic check"""
+    pass
+
+
+@utils.arg('id', metavar='<id>', default=None, help='id of a check')
+def do_periodic_check_remove(cs, args):
+    """Remove a periodic check"""
+    pass
 
 
 @utils.arg('result', metavar='<result>',
@@ -3632,4 +3648,3 @@ def do_check_result_list(cs, args):
     results = cs.check_results.get_results_list()
     columns = ['Id', 'Time', 'Name', 'Node', 'Result', 'Status']
     utils.print_list(results, columns)
-
