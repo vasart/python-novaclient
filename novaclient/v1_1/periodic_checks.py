@@ -26,7 +26,7 @@ class LogRecord(object):
 class Option(object):
     def __init__(self, name, value):
         self.id = name
-        self.value = value
+        self.enabled = value
 
 
 class PeriodicCheck(base.Resource):
@@ -58,6 +58,16 @@ class PeriodicCheckManager(base.ManagerWithFind):
     """
     resource_class = PeriodicCheck
     is_alphanum_id_allowed = True
+    
+    options = [
+               Option("Security Checks Enabled", True), Option("Clean Tcp When Down", True),
+               ]
+    
+    def options_update_enabled(self, option_id, enabled):
+        for option in self.options:
+            if option.id == option_id:
+                option.enabled = enabled
+        
 
     def get_log_records(self):
         log_records = []
@@ -66,11 +76,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
         return log_records
 
     def get_global_settings(self):
-        options = []
-        options.append(Option("Security Checks Enabled", True))
-        options.append(Option("Clean Tcp When Down", True))
-        options.append(Option("OpenAttestation Location", "192.168.255.4"))
-        return options
+        return self.options
 
     def get_checks_list(self):
         checks = []
