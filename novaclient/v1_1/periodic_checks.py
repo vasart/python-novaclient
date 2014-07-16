@@ -12,7 +12,7 @@
 
 from novaclient import base
 from novaclient import exceptions
-
+# from rtslib import utils
 
 class LogRecord(object):
     def __init__(self, record_id, log_record_time, log_record_source,
@@ -40,7 +40,7 @@ class PeriodicCheck(base.Resource):
         self.name = name
         self.desc = desc
         self.timeout = timeout
-	self.spacing = spacing
+        self.spacing = spacing
 
     def __repr__(self):
         return "<Check: %s>" % self.name
@@ -62,7 +62,12 @@ class PeriodicCheckManager(base.ManagerWithFind):
     options = [
                Option("Security Checks Enabled", True), Option("Clean Tcp When Down", True),
                ]
-    
+    periodic_checks = [
+                       PeriodicCheck(0, 'OpenAttestation', 'Static file integrity check using IMA/TPM', 600, 1200),
+                       PeriodicCheck(1, 'DynMem', 'Dynamic memory check', 300, 600),
+                       PeriodicCheck(2, 'Yet Another Check', 'One more mock check', 720, 1440),
+                       ]
+        
     def options_update_enabled(self, option_id, enabled):
         for option in self.options:
             if option.id == option_id:
@@ -79,17 +84,12 @@ class PeriodicCheckManager(base.ManagerWithFind):
         return self.options
 
     def get_checks_list(self):
-        checks = []
-        checks.append(PeriodicCheck(0, 'OpenAttestation',
-            'Static file integrity check using IMA/TPM', 600, 1200))
-        checks.append(PeriodicCheck(1, 'DynMem', 'Dynamic memory check', 300,
-	    600))
-        checks.append(PeriodicCheck(2, 'Yet Another Check',
-            'One more mock check', 720, 1440))
-        return checks
+        return self.periodic_checks
 
     def get_specific_check(self, check_id):
-        return self.get_checks_list()[check_id]
+         for index, check in enumerate(self.periodic_checks):
+            if int(check.id) == int(check_id):
+                return check
 
     def list(self):
         """
@@ -126,7 +126,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
                 "name": name,
                 "desc": desc,
                 "timeout": timeout,
-		"spacing": spacing,
+                "spacing": spacing,
                 "id": id
             }
         }
@@ -155,3 +155,18 @@ class PeriodicCheckManager(base.ManagerWithFind):
         body = self._build_body(name, desc, timeout, checkid)
 
         return self._create("/periodic_checks", body, "periodic_check")
+    
+    def periodic_check_create(self, name, desc, timeout, spacing):
+        new_id = self.periodic_checks[-1].id + 1      
+        return self.periodic_checks.append(PeriodicCheck(new_id, name, desc, timeout, spacing))
+    
+    def periodic_check_delete(self, check_id):
+        ind = 0 
+         
+        for index, check in enumerate(self.periodic_checks):
+            if int(check.id) == int(check_id):
+                ind = index                
+                break
+            
+        del self.periodic_checks[index]
+
