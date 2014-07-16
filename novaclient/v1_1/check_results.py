@@ -50,19 +50,17 @@ class CheckResultManager(base.ManagerWithFind):
     """
     resource_class = CheckResult
     is_alphanum_id_allowed = True
+    
+    
+    results = [
+               CheckResult(1, '2014/06/12 12:23:12', 'OpenAttestation', 1, 'trusted', 'Pass'),
+               CheckResult(2, '2014/06/12 12:24:12', 'OpenAttestation', 2, 'not_trusted', 'Fail'),
+               CheckResult(3, '2014/06/12 12:25:12', 'OpenAttestation', 3, 'trusted', 'Pass'),
+               CheckResult(4, '2014/06/12 12:26:12', 'OpenAttestation', 4, 'unknown', 'Error'),
+               ]
 
     def get_results_list(self):
-        results = []
-        """Get the list of check results."""
-        results.append(CheckResult(1, '2014/06/12 12:23:12', 'OpenAttestation',
-            1, 'trusted', 'Pass'))
-        results.append(CheckResult(2, '2014/06/12 12:24:12', 'OpenAttestation',
-            2, 'not_trusted', 'Fail'))
-        results.append(CheckResult(3, '2014/06/12 12:25:12', 'OpenAttestation',
-            3, 'trusted', 'Pass'))
-        results.append(CheckResult(4, '2014/06/12 12:26:12', 'OpenAttestation',
-            4, 'unknown', 'Error'))
-        return results
+        return self.results
 
     def list(self):
         """
@@ -91,43 +89,13 @@ class CheckResultManager(base.ManagerWithFind):
         :param check_result: The ID of the :class:`CheckResult` to get.
         """
         self._delete("/check_results/%s" % base.getid(check_result))
-
-    def _build_body(self, timestamp, name, node, result, status, id):
-        return {
-            "check_result": {
-                "timestamp": timestamp,
-                "name": name,
-                "node": node,
-                "result": result,
-                "status": status,
-                "id": id
-            }
-        }
-
-    def create(self, timestamp, name, node, result, status, resultid="auto"):
-        """
-        Create a check result.
-
-        :param name: Descriptive name of the check result
-        :param node: Memory in MB for the check_result
-        :param result: Number of VCPUs for the check_result
-        :param status: Size of local disk in GB
-        :param resultid: ID for the check result (optional).
-                         You can use the reserved value ``"auto"`` to have
-                         Nova generate a UUID for the check result in cases
-                         where you cannot simply pass ``None``.
-        :rtype: :class:`CheckResult`
-        """
-
-        try:
-            timestamp = int(timestamp)
-        except (TypeError, ValueError):
-            raise exceptions.CommandError(_("Timestamp must be an integer."))
-
-        if resultid == "auto":
-            resultid = None
-
-        body = self._build_body(timestamp, name, node, result, status,
-            resultid)
-
-        return self._create("/check_results", body, "check_result")
+        
+    def result_delete(self, result_id):
+        ind = 0 
+         
+        for index, result in enumerate(self.results):
+            if int(result.id) == int(result_id):
+                ind = index                
+                break
+            
+        del self.results[ind]

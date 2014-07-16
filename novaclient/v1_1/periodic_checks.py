@@ -168,5 +168,5 @@ class PeriodicCheckManager(base.ManagerWithFind):
                 ind = index                
                 break
             
-        del self.periodic_checks[index]
+        del self.periodic_checks[ind]
 
