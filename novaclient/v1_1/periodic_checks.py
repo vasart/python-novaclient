@@ -58,6 +58,8 @@ class PeriodicCheckManager(base.ManagerWithFind):
     """
     resource_class = PeriodicCheck
     is_alphanum_id_allowed = True
+    checks_num = 3    
+
     
     options = [
                Option("Security Checks Enabled", True), Option("Clean Tcp When Down", True),
@@ -69,7 +71,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
                        ]
         
     def options_update_enabled(self, option_id, enabled):
-        for option in self.options:
+        for option in PeriodicCheckManager.options:
             if option.id == option_id:
                 option.enabled = enabled
         
@@ -81,13 +83,13 @@ class PeriodicCheckManager(base.ManagerWithFind):
         return log_records
 
     def get_global_settings(self):
-        return self.options
+        return PeriodicCheckManager.options
 
     def get_checks_list(self):
-        return self.periodic_checks
+        return PeriodicCheckManager.periodic_checks
 
     def get_specific_check(self, check_id):
-         for index, check in enumerate(self.periodic_checks):
+         for index, check in enumerate(PeriodicCheckManager.periodic_checks):
             if int(check.id) == int(check_id):
                 return check
 
@@ -157,16 +159,17 @@ class PeriodicCheckManager(base.ManagerWithFind):
         return self._create("/periodic_checks", body, "periodic_check")
     
     def periodic_check_create(self, name, desc, timeout, spacing):
-        new_id = self.periodic_checks[-1].id + 1      
-        return self.periodic_checks.append(PeriodicCheck(new_id, name, desc, timeout, spacing))
+        new_check = PeriodicCheckManager.periodic_checks.append(PeriodicCheck(PeriodicCheckManager.checks_num, name, desc, timeout, spacing))
+        PeriodicCheckManager.checks_num += 1
+        return new_check
     
     def periodic_check_delete(self, check_id):
         ind = 0 
          
-        for index, check in enumerate(self.periodic_checks):
+        for index, check in enumerate(PeriodicCheckManager.periodic_checks):
             if int(check.id) == int(check_id):
                 ind = index                
                 break
             
-        del self.periodic_checks[ind]
+        del PeriodicCheckManager.periodic_checks[ind]
 

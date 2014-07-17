@@ -60,7 +60,7 @@ class CheckResultManager(base.ManagerWithFind):
                ]
 
     def get_results_list(self):
-        return self.results
+        return CheckResultManager.results
 
     def list(self):
         """
@@ -93,9 +93,9 @@ class CheckResultManager(base.ManagerWithFind):
     def result_delete(self, result_id):
         ind = 0 
          
-        for index, result in enumerate(self.results):
+        for index, result in enumerate(CheckResultManager.results):
             if int(result.id) == int(result_id):
                 ind = index                
                 break
             
-        del self.results[ind]
+        del CheckResultManager.results[ind]
