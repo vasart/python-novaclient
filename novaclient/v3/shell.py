@@ -2979,4 +2979,3 @@ def do_check_result_list(cs, args):
     results = cs.check_results.get_results_list()
     columns = ['Id', 'Time', 'Name', 'Node', 'Result', 'Status']
     utils.print_list(results, columns)
-

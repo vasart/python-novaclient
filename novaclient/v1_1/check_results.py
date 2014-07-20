@@ -15,8 +15,6 @@ Check results interface.
 """
 
 from novaclient import base
-from novaclient import exceptions
-from novaclient.openstack.common.gettextutils import _
 
 
 class CheckResult(base.Resource):
@@ -50,14 +48,17 @@ class CheckResultManager(base.ManagerWithFind):
     """
     resource_class = CheckResult
     is_alphanum_id_allowed = True
-    
-    
+
     results = [
-               CheckResult(1, '2014/06/12 12:23:12', 'OpenAttestation', 1, 'trusted', 'Pass'),
-               CheckResult(2, '2014/06/12 12:24:12', 'OpenAttestation', 2, 'not_trusted', 'Fail'),
-               CheckResult(3, '2014/06/12 12:25:12', 'OpenAttestation', 3, 'trusted', 'Pass'),
-               CheckResult(4, '2014/06/12 12:26:12', 'OpenAttestation', 4, 'unknown', 'Error'),
-               ]
+        CheckResult(1, '2014/06/12 12:23:12', 'OpenAttestation',
+                    1, 'trusted', 'Pass'),
+        CheckResult(2, '2014/06/12 12:24:12', 'OpenAttestation',
+                    2, 'not_trusted', 'Fail'),
+        CheckResult(3, '2014/06/12 12:25:12', 'OpenAttestation',
+                    3, 'trusted', 'Pass'),
+        CheckResult(4, '2014/06/12 12:26:12', 'OpenAttestation',
+                    4, 'unknown', 'Error'),
+    ]
 
     def get_results_list(self):
         return CheckResultManager.results
@@ -89,13 +90,13 @@ class CheckResultManager(base.ManagerWithFind):
         :param check_result: The ID of the :class:`CheckResult` to get.
         """
         self._delete("/check_results/%s" % base.getid(check_result))
-        
+
     def result_delete(self, result_id):
-        ind = 0 
-         
+        ind = 0
+
         for index, result in enumerate(CheckResultManager.results):
             if int(result.id) == int(result_id):
-                ind = index                
+                ind = index
                 break
-            
+
         del CheckResultManager.results[ind]
