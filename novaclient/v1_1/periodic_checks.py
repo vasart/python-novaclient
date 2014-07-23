@@ -52,7 +52,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
     """
     resource_class = PeriodicCheck
     is_alphanum_id_allowed = True
-#     checks_num = 3
+    checks_num = 3
 
     options = [
         Option("Security Checks Enabled", True),
@@ -131,6 +131,8 @@ class PeriodicCheckManager(base.ManagerWithFind):
                          check in cases where you cannot simply pass ``None``.
         :rtype: :class:`PeriodicCheck`
         """
+        PeriodicCheckManager.checks_num += 1
+        checkid = PeriodicCheckManager.checks_num
 
         try:
             timeout = int(timeout)
@@ -140,7 +142,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
         if checkid == "auto":
             checkid = None
 
-        body = self._build_body(name, desc, timeout, checkid)
+        body = self._build_body(name, desc, timeout, spacing, checkid)
 
         return self._create("/periodic_checks", body, "periodic_check")
 
