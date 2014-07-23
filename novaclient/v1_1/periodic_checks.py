@@ -36,13 +36,6 @@ class PeriodicCheck(base.Resource):
     """
     HUMAN_ID = True
 
-    def __init__(self, check_id, name, desc, timeout, spacing):
-        self.id = check_id
-        self.name = name
-        self.desc = desc
-        self.timeout = timeout
-        self.spacing = spacing
-
     def __repr__(self):
         return "<Check: %s>" % self.name
 
@@ -59,19 +52,11 @@ class PeriodicCheckManager(base.ManagerWithFind):
     """
     resource_class = PeriodicCheck
     is_alphanum_id_allowed = True
-    checks_num = 3
+#     checks_num = 3
 
     options = [
         Option("Security Checks Enabled", True),
         Option("Clean Tcp When Down", True),
-    ]
-    periodic_checks = [
-        PeriodicCheck(0, 'OpenAttestation',
-                      'Static file integrity check using IMA/TPM', 600, 1200),
-        PeriodicCheck(1, 'DynMem',
-                      'Dynamic memory check', 300, 600),
-        PeriodicCheck(2, 'Yet Another Check',
-                      'One more mock check', 720, 1440),
     ]
 
     def options_update_enabled(self, option_id, enabled):
@@ -102,9 +87,7 @@ class PeriodicCheckManager(base.ManagerWithFind):
 
         :rtype: list of :class:`PeriodicCheck`.
         """
-        query_string = "?%s"
-
-        return self._list("/periodic_checks%s" % query_string,
+        return self._list("/periodic_checks",
             "periodic_checks")
 
     def get(self, periodic_check):
